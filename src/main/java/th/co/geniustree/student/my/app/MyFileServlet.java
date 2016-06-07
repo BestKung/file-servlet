@@ -23,21 +23,21 @@ public class MyFileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String name = req.getParameter("name");
-        
         byte[] buffer = new byte[1024];
-        File file = new File("/home/best/"+name);
+        File file = new File(name);
         FileInputStream fis = new FileInputStream(file);
-//        resp.setContentType("application/octet-stream");
-        resp.setHeader("Content-Disposition", "filename=\"readme.txt\"");
+        resp.setHeader("Content-Disposition", "attachment; filename=" + name);
         resp.setContentLength((int) file.length());
         OutputStream os = resp.getOutputStream();
 
         int byteRead = 0;
-        while ((byteRead = fis.read()) != -1) {
-            System.out.println((char)byteRead);
+        while ((byteRead = fis.read(buffer)) > 0) {
             os.write(buffer, 0, byteRead);
 
         }
+
+        os.close();
+        fis.close();
 
     }
 
